@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	routes "github.com/dannyh79/commentator/internal/rest/v1"
+	"github.com/dannyh79/commentator/internal/shows"
 	"github.com/gin-gonic/gin"
 	"github.com/google/go-cmp/cmp"
 )
@@ -52,7 +53,8 @@ type TestSuite struct {
 func newTestSuite() *TestSuite {
 	gin.SetMode(gin.TestMode)
 	engine := gin.Default()
-	routes.AddRoutes(engine)
+	usecase := shows.NewShowComments()
+	routes.AddRoutes(engine, usecase)
 	return &TestSuite{engine}
 }
 
