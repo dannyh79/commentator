@@ -3,9 +3,12 @@ package repo
 import "github.com/dannyh79/commentator/internal/shows/entities"
 
 type Repository[T any] interface {
+	// ENHANCEMENT: use (data, err) signature support error handling on consumer side
 	Save(*T) T
 }
 
+// ENHANCEMENT: set default field value
+// ENHANCEMENT: leverage UUID to prevent IDOR (insecure direct object references)
 type CommentSchema struct {
 	Id      int
 	UserId  int
