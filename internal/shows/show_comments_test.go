@@ -28,7 +28,7 @@ func Test_ShowComments_CreateComment(t *testing.T) {
 			r := repo.NewInMemoryCommentRepo()
 			usecase := shows.NewShowComments(r)
 
-			got := usecase.CreateComment(tc.params)
+			got, _ := usecase.CreateComment(tc.params)
 
 			utils.AssertEqual(t)(got, tc.expected)
 		})

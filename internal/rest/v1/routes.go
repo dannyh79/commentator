@@ -21,6 +21,10 @@ type PostShowsCommentsOutput struct {
 	Result CreatedComment `json:"result"`
 }
 
+type FailureOutput struct {
+	Error string `json:"error"`
+}
+
 func AddRoutes(r *gin.Engine, u *shows.ShowComments) {
 	v1 := r.Group("/v1")
 	v1.POST("/shows/:id/comments", createCommentHandler(u))
@@ -32,7 +36,12 @@ func createCommentHandler(u *shows.ShowComments) gin.HandlerFunc {
 		c.ShouldBindJSON(&payload)
 		showId, _ := strconv.Atoi(c.Param("id"))
 		params := toCreateCommentParams(showId, &payload)
-		comment := u.CreateComment(params)
+		comment, err := u.CreateComment(params)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, FailureOutput{Error: err.Error()})
+			return
+		}
+
 		c.JSON(http.StatusCreated, toPostShowsCommentsOutput(comment))
 	}
 }

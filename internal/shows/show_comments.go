@@ -1,6 +1,9 @@
 package shows
 
 import (
+	"errors"
+	"strings"
+
 	"github.com/dannyh79/commentator/internal/repo"
 	"github.com/dannyh79/commentator/internal/shows/entities"
 )
@@ -20,14 +23,20 @@ type CreateCommentOutput struct {
 	Upvote  int
 }
 
-func (u *ShowComments) CreateComment(i *CreateCommentInput) *CreateCommentOutput {
+var ErrorInValidComment = errors.New("invalid word found in comment")
+
+func (u *ShowComments) CreateComment(i *CreateCommentInput) (*CreateCommentOutput, error) {
 	c := newComment(i)
+	if !isValidComment(c.Comment) {
+		return nil, ErrorInValidComment
+	}
+
 	r := u.repo.Save(c)
 	return &CreateCommentOutput{
 		UserId:  r.UserId,
 		Comment: r.Comment,
 		Upvote:  r.Upvote,
-	}
+	}, nil
 }
 
 func NewShowComments(r repo.Repository[entities.Comment]) *ShowComments {
@@ -41,4 +50,18 @@ func newComment(i *CreateCommentInput) *entities.Comment {
 		Comment: i.Comment,
 		Upvote:  0,
 	}
+}
+
+// Arbitrary list of strings that are deemed invalid
+var InValidWords = []string{
+	"NSFW",
+}
+
+func isValidComment(c string) bool {
+	for _, word := range InValidWords {
+		if strings.Contains(c, word) {
+			return false
+		}
+	}
+	return true
 }

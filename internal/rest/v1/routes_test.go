@@ -28,6 +28,13 @@ func Test_POST_Shows_Comments(t *testing.T) {
 			expectedStatus: http.StatusCreated,
 			expectedData:   `{"result":{"user_id":2,"comment":"some comments","upvote":0}}`,
 		},
+		{
+			name:           "with NSFW comment, returns status 400",
+			path:           "/v1/shows/1/comments",
+			payload:        `{"user_id":2,"comment":"some NSFW comments"}`,
+			expectedStatus: http.StatusBadRequest,
+			expectedData:   `{"error":"invalid word found in comment"}`,
+		},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
