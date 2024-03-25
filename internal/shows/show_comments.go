@@ -20,14 +20,25 @@ type CreateCommentOutput struct {
 	Upvote  int
 }
 
-func (u *ShowComments) CreateComment(*CreateCommentInput) *CreateCommentOutput {
+func (u *ShowComments) CreateComment(i *CreateCommentInput) *CreateCommentOutput {
+	c := newComment(i)
+	r := u.repo.Save(c)
 	return &CreateCommentOutput{
-		UserId:  2,
-		Comment: "some comments",
-		Upvote:  0,
+		UserId:  r.UserId,
+		Comment: r.Comment,
+		Upvote:  r.Upvote,
 	}
 }
 
 func NewShowComments(r repo.Repository[entities.Comment]) *ShowComments {
 	return &ShowComments{r}
+}
+
+func newComment(i *CreateCommentInput) *entities.Comment {
+	return &entities.Comment{
+		UserId:  i.UserId,
+		ShowId:  i.ShowId,
+		Comment: i.Comment,
+		Upvote:  0,
+	}
 }
