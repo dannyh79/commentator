@@ -1,9 +1,12 @@
 package shows
 
-import "github.com/dannyh79/commentator/internal/repo"
+import (
+	"github.com/dannyh79/commentator/internal/repo"
+	"github.com/dannyh79/commentator/internal/shows/entities"
+)
 
 type ShowComments struct {
-	repo repo.Repository[repo.Comment]
+	repo repo.Repository[entities.Comment]
 }
 
 type CreateCommentInput struct {
@@ -25,6 +28,6 @@ func (u *ShowComments) CreateComment(*CreateCommentInput) *CreateCommentOutput {
 	}
 }
 
-func NewShowComments(r repo.Repository[repo.Comment]) *ShowComments {
+func NewShowComments(r repo.Repository[entities.Comment]) *ShowComments {
 	return &ShowComments{r}
 }

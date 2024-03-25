@@ -1,15 +1,9 @@
 package repo
 
+import "github.com/dannyh79/commentator/internal/shows/entities"
+
 type Repository[T any] interface {
 	Save(*T) T
-}
-
-type Comment struct {
-	Id      int
-	UserId  int
-	ShowId  int
-	Comment string
-	Upvote  int
 }
 
 type CommentSchema struct {
@@ -24,7 +18,7 @@ type InMemoryCommmentRepo struct {
 	data map[int]CommentSchema
 }
 
-func (r *InMemoryCommmentRepo) Save(c *Comment) Comment {
+func (r *InMemoryCommmentRepo) Save(c *entities.Comment) entities.Comment {
 	r.data[c.Id] = *toCommentSchema(c)
 	row := r.data[c.Id]
 	return *toComment(&row)
@@ -36,8 +30,8 @@ func NewInMemoryCommentRepo() *InMemoryCommmentRepo {
 	}
 }
 
-func toComment(c *CommentSchema) *Comment {
-	return &Comment{
+func toComment(c *CommentSchema) *entities.Comment {
+	return &entities.Comment{
 		Id:      c.Id,
 		UserId:  c.UserId,
 		ShowId:  c.Id,
@@ -46,7 +40,7 @@ func toComment(c *CommentSchema) *Comment {
 	}
 }
 
-func toCommentSchema(c *Comment) *CommentSchema {
+func toCommentSchema(c *entities.Comment) *CommentSchema {
 	return &CommentSchema{
 		Id:      c.Id,
 		UserId:  c.UserId,
