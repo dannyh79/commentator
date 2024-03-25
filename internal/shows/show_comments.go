@@ -28,7 +28,11 @@ var ErrorEmptyComment = errors.New("empty comment found")
 var ErrorInValidComment = errors.New("invalid word found in comment")
 
 func (u *ShowComments) CreateComment(i *CreateCommentInput) (*CreateCommentOutput, error) {
+	// ENHANCEMENT: validate showId by checking if such show exists. Returns error if not.
+
 	c := newComment(i)
+
+	// ENHANCEMENT: run validations parallelly if they are costy
 	if isEmptyComment(c.Comment) {
 		return nil, ErrorEmptyComment
 	}
