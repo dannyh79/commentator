@@ -3,13 +3,12 @@ package routes_test
 import (
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	routes "github.com/dannyh79/commentator/internal/rest/v1"
 	"github.com/dannyh79/commentator/internal/shows"
+	utils "github.com/dannyh79/commentator/internal/testutils"
 	"github.com/gin-gonic/gin"
-	"github.com/google/go-cmp/cmp"
 )
 
 func Test_POST_Shows_Comments(t *testing.T) {
@@ -39,9 +38,9 @@ func Test_POST_Shows_Comments(t *testing.T) {
 
 			suite.Engine.ServeHTTP(rr, req)
 
-			assertJsonHeader(t)(rr)
-			assertHttpStatus(t)(rr, tc.expectedStatus)
-			assertEqual(t)(rr.Body.String(), tc.expectedData)
+			utils.AssertJsonHeader(t)(rr)
+			utils.AssertHttpStatus(t)(rr, tc.expectedStatus)
+			utils.AssertEqual(t)(rr.Body.String(), tc.expectedData)
 		})
 	}
 }
@@ -56,32 +55,4 @@ func newTestSuite() *TestSuite {
 	usecase := shows.NewShowComments()
 	routes.AddRoutes(engine, usecase)
 	return &TestSuite{engine}
-}
-
-func assertEqual(t *testing.T) func(got any, want any) {
-	return func(got any, want any) {
-		t.Helper()
-		if !cmp.Equal(got, want) {
-			t.Errorf(cmp.Diff(want, got))
-		}
-	}
-}
-
-func assertJsonHeader(t *testing.T) func(rr *httptest.ResponseRecorder) {
-	return func(rr *httptest.ResponseRecorder) {
-		t.Helper()
-		want := "application/json"
-		if got := rr.Header().Get("Content-Type"); !strings.Contains(got, want) {
-			t.Errorf("got HTTP status %v, want %v", got, want)
-		}
-	}
-}
-
-func assertHttpStatus(t *testing.T) func(rr *httptest.ResponseRecorder, want int) {
-	return func(rr *httptest.ResponseRecorder, want int) {
-		t.Helper()
-		if got := rr.Result().StatusCode; got != want {
-			t.Errorf("got HTTP status %v, want %v", got, want)
-		}
-	}
 }
