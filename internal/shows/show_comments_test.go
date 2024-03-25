@@ -23,6 +23,13 @@ func Test_ShowComments_CreateComment(t *testing.T) {
 			expectError: false,
 		},
 		{
+			name:          "returns error ErrorEmptyComment",
+			params:        &shows.CreateCommentInput{UserId: 2, ShowId: 1, Comment: "  "},
+			expected:      nil,
+			expectError:   true,
+			expectedError: shows.ErrorEmptyComment,
+		},
+		{
 			name:          "returns error ErrorInValidComment",
 			params:        &shows.CreateCommentInput{UserId: 2, ShowId: 1, Comment: "some NSFW comments"},
 			expected:      nil,

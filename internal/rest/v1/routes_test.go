@@ -29,6 +29,13 @@ func Test_POST_Shows_Comments(t *testing.T) {
 			expectedData:   `{"result":{"user_id":2,"comment":"some comments","upvote":0}}`,
 		},
 		{
+			name:           "with empty comment, returns status 400",
+			path:           "/v1/shows/1/comments",
+			payload:        `{"user_id":2,"comment":"  "}`,
+			expectedStatus: http.StatusBadRequest,
+			expectedData:   `{"error":"empty comment found"}`,
+		},
+		{
 			name:           "with NSFW comment, returns status 400",
 			path:           "/v1/shows/1/comments",
 			payload:        `{"user_id":2,"comment":"some NSFW comments"}`,

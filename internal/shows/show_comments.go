@@ -23,11 +23,16 @@ type CreateCommentOutput struct {
 	Upvote  int
 }
 
+var ErrorEmptyComment = errors.New("empty comment found")
+
 var ErrorInValidComment = errors.New("invalid word found in comment")
 
 func (u *ShowComments) CreateComment(i *CreateCommentInput) (*CreateCommentOutput, error) {
 	c := newComment(i)
-	if !isValidComment(c.Comment) {
+	if isEmptyComment(c.Comment) {
+		return nil, ErrorEmptyComment
+	}
+	if isInvalidComment(c.Comment) {
 		return nil, ErrorInValidComment
 	}
 
@@ -52,16 +57,23 @@ func newComment(i *CreateCommentInput) *entities.Comment {
 	}
 }
 
+func isEmptyComment(c string) bool {
+	if len(strings.TrimSpace(c)) == 0 {
+		return true
+	}
+	return false
+}
+
 // Arbitrary list of strings that are deemed invalid
-var InValidWords = []string{
+var InvalidWords = []string{
 	"NSFW",
 }
 
-func isValidComment(c string) bool {
-	for _, word := range InValidWords {
+func isInvalidComment(c string) bool {
+	for _, word := range InvalidWords {
 		if strings.Contains(c, word) {
-			return false
+			return true
 		}
 	}
-	return true
+	return false
 }
