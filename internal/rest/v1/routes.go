@@ -27,6 +27,13 @@ type FailureOutput struct {
 
 func AddRoutes(r *gin.Engine, u *shows.ShowComments) {
 	v1 := r.Group("/v1")
+
+	// ENHANCEMENT: CORS middleware
+
+	// ENHANCEMENT: authorization middleware
+
+	// ENHANCEMENT: authentication endpoint
+
 	v1.POST("/shows/:id/comments", createCommentHandler(u))
 }
 
