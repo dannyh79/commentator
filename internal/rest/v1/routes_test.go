@@ -1,6 +1,7 @@
 package routes_test
 
 import (
+	"bytes"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -34,7 +35,7 @@ func Test_POST_Shows_Comments(t *testing.T) {
 
 			suite := newTestSuite()
 
-			req := httptest.NewRequest(http.MethodPost, tc.path, nil)
+			req := httptest.NewRequest(http.MethodPost, tc.path, bytes.NewBufferString(tc.payload))
 			rr := httptest.NewRecorder()
 
 			suite.Engine.ServeHTTP(rr, req)

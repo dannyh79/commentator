@@ -28,12 +28,20 @@ func AddRoutes(r *gin.Engine, u *shows.ShowComments) {
 
 func createCommentHandler(u *shows.ShowComments) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var payload shows.CreateCommentInput
+		var payload PostShowsCommentsInput
 		c.ShouldBindJSON(&payload)
 		showId, _ := strconv.Atoi(c.Param("id"))
-		payload.ShowId = showId
-		comment := u.CreateComment(&payload)
+		params := toCreateCommentParams(showId, &payload)
+		comment := u.CreateComment(params)
 		c.JSON(http.StatusCreated, toPostShowsCommentsOutput(comment))
+	}
+}
+
+func toCreateCommentParams(showId int, p *PostShowsCommentsInput) *shows.CreateCommentInput {
+	return &shows.CreateCommentInput{
+		UserId:  p.UserId,
+		ShowId:  showId,
+		Comment: p.Comment,
 	}
 }
 
