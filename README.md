@@ -1,5 +1,7 @@
 # Commentator
 
+![Test](https://github.com/dannyh79/commentator/actions/workflows/ci.yml/badge.svg)
+
 An example app with REST API `POST /v1/shows/:id/comments`. See /docs for more.
 
 ## Getting Started
