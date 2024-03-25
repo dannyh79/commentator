@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	repo "github.com/dannyh79/commentator/internal/repo"
 	routes "github.com/dannyh79/commentator/internal/rest/v1"
 	"github.com/dannyh79/commentator/internal/shows"
 	utils "github.com/dannyh79/commentator/internal/testutils"
@@ -52,7 +53,8 @@ type TestSuite struct {
 func newTestSuite() *TestSuite {
 	gin.SetMode(gin.TestMode)
 	engine := gin.Default()
-	usecase := shows.NewShowComments()
+	r := repo.NewInMemoryCommentRepo()
+	usecase := shows.NewShowComments(r)
 	routes.AddRoutes(engine, usecase)
 	return &TestSuite{engine}
 }

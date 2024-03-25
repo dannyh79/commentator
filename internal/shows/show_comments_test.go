@@ -3,6 +3,7 @@ package shows_test
 import (
 	"testing"
 
+	"github.com/dannyh79/commentator/internal/repo"
 	shows "github.com/dannyh79/commentator/internal/shows"
 	utils "github.com/dannyh79/commentator/internal/testutils"
 )
@@ -24,7 +25,8 @@ func Test_ShowComments_CreateComment(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			usecase := shows.NewShowComments()
+			r := repo.NewInMemoryCommentRepo()
+			usecase := shows.NewShowComments(r)
 
 			got := usecase.CreateComment(tc.params)
 
