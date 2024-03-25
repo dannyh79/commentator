@@ -10,14 +10,24 @@ import (
 
 func Test_ShowComments_CreateComment(t *testing.T) {
 	tests := []struct {
-		name     string
-		params   *shows.CreateCommentInput
-		expected *shows.CreateCommentOutput
+		name          string
+		params        *shows.CreateCommentInput
+		expected      *shows.CreateCommentOutput
+		expectError   bool
+		expectedError error
 	}{
 		{
-			name:     "creates a comment",
-			params:   &shows.CreateCommentInput{UserId: 2, ShowId: 1, Comment: "some comments"},
-			expected: &shows.CreateCommentOutput{UserId: 2, Comment: "some comments", Upvote: 0},
+			name:        "creates a comment",
+			params:      &shows.CreateCommentInput{UserId: 2, ShowId: 1, Comment: "some comments"},
+			expected:    &shows.CreateCommentOutput{UserId: 2, Comment: "some comments", Upvote: 0},
+			expectError: false,
+		},
+		{
+			name:          "returns error ErrorInValidComment",
+			params:        &shows.CreateCommentInput{UserId: 2, ShowId: 1, Comment: "some NSFW comments"},
+			expected:      nil,
+			expectError:   true,
+			expectedError: shows.ErrorInValidComment,
 		},
 	}
 
@@ -28,8 +38,11 @@ func Test_ShowComments_CreateComment(t *testing.T) {
 			r := repo.NewInMemoryCommentRepo()
 			usecase := shows.NewShowComments(r)
 
-			got, _ := usecase.CreateComment(tc.params)
+			got, err := usecase.CreateComment(tc.params)
 
+			if tc.expectError {
+				utils.AssertErrorEqual(t)(err, tc.expectedError)
+			}
 			utils.AssertEqual(t)(got, tc.expected)
 		})
 	}

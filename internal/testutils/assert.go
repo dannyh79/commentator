@@ -1,6 +1,7 @@
 package testutils_test
 
 import (
+	"errors"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -13,6 +14,15 @@ func AssertEqual(t *testing.T) func(got any, want any) {
 		t.Helper()
 		if !cmp.Equal(got, want) {
 			t.Errorf(cmp.Diff(want, got))
+		}
+	}
+}
+
+func AssertErrorEqual(t *testing.T) func(got error, want error) {
+	return func(got error, want error) {
+		t.Helper()
+		if want != nil && !errors.Is(got, want) {
+			t.Errorf(cmp.Diff(got.Error(), want.Error()))
 		}
 	}
 }
